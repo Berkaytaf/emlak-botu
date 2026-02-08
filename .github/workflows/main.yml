@@ -2,8 +2,19 @@ name: Emlak Portali Otomasyonu
 
 on:
   schedule:
+    # Her 15 dakikada bir otomatik tarama (Varsayılan: İstanbul/Kadıköy)
     - cron: '*/15 * * * *'
   workflow_dispatch:
+    # Selim Abi'nin istediği kutucuklar burada tanımlanıyor
+    inputs:
+      sehir:
+        description: 'Hangi Şehir? (küçük harfle, örn: istanbul)'
+        required: true
+        default: 'istanbul'
+      ilce:
+        description: 'Hangi İlçe? (küçük harfle, örn: kadikoy)'
+        required: true
+        default: 'kadikoy'
 
 jobs:
   build:
@@ -12,20 +23,27 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v3
+
       - name: Python Kur
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+
       - name: Bağımlılıklar
         run: |
           pip install playwright
           playwright install chromium
+
       - name: Botu Çalıştır
-        run: python pro_scraper.py
+        # Burada Python koduna kutucuklara yazılan verileri gönderiyoruz
+        # Eğer otomatik çalışırsa (cron), varsayılan olarak istanbul kadikoy çeker
+        run: |
+          python pro_scraper.py ${{ github.event.inputs.sehir || 'istanbul' }} ${{ github.event.inputs.ilce || 'kadikoy' }}
+
       - name: Sayfayı ve Veriyi Yayınla
         run: |
           git config --global user.name "Emlak Bot"
           git config --global user.email "bot@github.com"
           git add index.html data/database.json
-          git commit -m "Portal ve veritabanı güncellendi" || exit 0
+          git commit -m "Hedef: ${{ github.event.inputs.sehir || 'istanbul' }}/${{ github.event.inputs.ilce || 'kadikoy' }} güncellendi" || exit 0
           git push
