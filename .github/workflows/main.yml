@@ -1,0 +1,39 @@
+name: Pro Emlak Takip Sistemi
+
+on:
+  schedule:
+    - cron: '*/15 * * * *' # Her 15 dakikada bir ateşle
+  workflow_dispatch: # Manuel çalıştırma butonu
+
+jobs:
+  scrape-and-notify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Repoya geri yazma izni
+    steps:
+      - name: Kodları Çek
+        uses: actions/checkout@v3
+        
+      - name: Python 3.10 Kur
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Playwright ve Bağımlılıkları Kur
+        run: |
+          pip install playwright requests
+          playwright install chromium
+          
+      - name: Botu Çalıştır
+        env:
+          TELE_TOKEN: ${{ secrets.TELE_TOKEN }}
+          TELE_CHAT_ID: ${{ secrets.TELE_CHAT_ID }}
+        run: python pro_scraper.py
+        
+      - name: Veritabanını Güncelle ve Push Et
+        run: |
+          git config --global user.name "Pro-Automation-Bot"
+          git config --global user.email "bot@github.com"
+          git add data/database.json
+          git commit -m "Veritabanı otomatik güncellendi: $(date)" || exit 0
+          git push
