@@ -9,21 +9,25 @@
             body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; }
             .container { max-width: 1200px; margin: auto; }
             .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-            .card { background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; position: relative; }
+            .card { background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; position: relative; transition: 0.3s; }
+            .card:hover { transform: translateY(-5px); border-color: #38bdf8; }
             .source-badge { position: absolute; top: 10px; right: 10px; padding: 4px 8px; border-radius: 4px; font-size: 0.7em; font-weight: bold; }
             .price { font-size: 1.6em; color: #fbbf24; font-weight: bold; margin: 15px 0 5px 0; }
-            .title { font-size: 0.9em; color: #94a3b8; height: 40px; overflow: hidden; margin-bottom: 15px; }
+            .title { font-size: 0.9em; color: #94a3b8; height: 40px; overflow: hidden; margin-bottom: 15px; font-weight: 500; }
             .btn { display: block; text-align: center; background: #38bdf8; color: white; text-decoration: none; padding: 10px; border-radius: 6px; font-weight: bold; }
             .header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid #334155; padding-bottom: 20px; }
+            .status-msg { text-align: center; padding: 40px; color: #94a3b8; grid-column: 1 / -1; }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header">
                 <h1>🏢 Emlak Takip Merkezi</h1>
-                <p>Kullanılan Kaynaklar: Hepsiemlak, Zingat, Emlakjet | Son Güncelleme: 08/02/2026 03:26</p>
+                <p>Hepsiemlak, Zingat, Emlakjet | Son Güncelleme: 08/02/2026 03:33</p>
             </div>
-            <div class="grid"><p>Veriler senkronize ediliyor...</p></div>
+            <div class="grid">
+                <div class="status-msg"><h3>🔍 Veriler senkronize ediliyor...</h3><p>Bot şu an siteleri geziyor, lütfen 5-10 dakika sonra sayfayı yenileyin.</p></div>
+            </div>
         </div>
     </body>
     </html>
