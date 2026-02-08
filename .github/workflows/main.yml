@@ -1,39 +1,31 @@
-name: Pro Emlak Takip Sistemi
+name: Emlak Portali Otomasyonu
 
 on:
   schedule:
-    - cron: '*/15 * * * *' # Her 15 dakikada bir ateşle
-  workflow_dispatch: # Manuel çalıştırma butonu
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
 
 jobs:
-  scrape-and-notify:
+  build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Repoya geri yazma izni
+      contents: write
     steps:
-      - name: Kodları Çek
-        uses: actions/checkout@v3
-        
-      - name: Python 3.10 Kur
+      - uses: actions/checkout@v3
+      - name: Python Kur
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-          
-      - name: Playwright ve Bağımlılıkları Kur
+      - name: Bağımlılıklar
         run: |
-          pip install playwright requests
+          pip install playwright
           playwright install chromium
-          
       - name: Botu Çalıştır
-        env:
-          TELE_TOKEN: ${{ secrets.TELE_TOKEN }}
-          TELE_CHAT_ID: ${{ secrets.TELE_CHAT_ID }}
         run: python pro_scraper.py
-        
-      - name: Veritabanını Güncelle ve Push Et
+      - name: Sayfayı ve Veriyi Yayınla
         run: |
-          git config --global user.name "Pro-Automation-Bot"
+          git config --global user.name "Emlak Bot"
           git config --global user.email "bot@github.com"
-          git add data/database.json
-          git commit -m "Veritabanı otomatik güncellendi: $(date)" || exit 0
+          git add index.html data/database.json
+          git commit -m "Portal ve veritabanı güncellendi" || exit 0
           git push
